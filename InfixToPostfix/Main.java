@@ -2,6 +2,11 @@ import java.util.*;
 import java.util.List;
 import java.util.Arrays;
 
+/**
+ * @author Divya Prakash Varshney
+ * This is the stack class helps in managing the operator in the infix string.
+ */
+
 class  Stack<E> {
 
 	List<E> stack;
