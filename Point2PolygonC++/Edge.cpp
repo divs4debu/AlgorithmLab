@@ -24,6 +24,8 @@ public:
     return end;
   }
 
-
+  friend ostream& operator<< (std::ostream& stream, const Edge& edge){
+    cout<<"("<<edge.start<<") -------> ("<<edge.end<<")";
+  }
 };
 #endif

@@ -26,9 +26,16 @@ class Vertex{
     int get_y(){
       return coordinate_y;
     };
-    friend ostream& operator<< (std::ostream& stream, const Vertex& vertex){
-      cout<<"X_ -> "<<vertex.coordinate_x<<endl;
-      cout<<"Y_ -> "<<vertex.coordinate_y<<endl;
+    friend ostream& operator<< (ostream& stream, const Vertex& vertex){
+      cout<<vertex.coordinate_x<<", "<<vertex.coordinate_y;
+    }
+
+    bool operator!= (const Vertex& vertex){
+
+      if(coordinate_x != vertex.coordinate_x || coordinate_y != vertex.coordinate_y)
+        return true;
+      else
+        return false;
     }
 };
 #endif
