@@ -8,15 +8,19 @@ using namespace std;
 
 class Polygon{
 private:
-  std::vector<Edge> edges;
-  std::vector<Vertex> vertices;
+  vector<Edge> edges;
 public:
-  Polygon(std::vector<Edge> e){
+  Polygon(vector<Edge> e){
     edges = e;
   }
 
-  std::vector<Edge> get_edges(){
+  vector<Edge> get_edges(){
     return edges;
+  }
+
+  friend ostream& operator<< (ostream& stream, const Polygon& polygon){
+    for(int i=0; i<polygon.edges.size();i++)
+      cout<<polygon.edges[i]<<endl;
   }
 };
 #endif

@@ -37,5 +37,10 @@ class Vertex{
       else
         return false;
     }
+
+    bool operator< (const Vertex& vertex) const
+    {
+      return (coordinate_x < vertex.coordinate_x);
+    }
 };
 #endif

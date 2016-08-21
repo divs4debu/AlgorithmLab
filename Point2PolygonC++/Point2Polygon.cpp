@@ -4,20 +4,21 @@
 #include "Vertex.cpp"
 #include <vector>
 #include <limits>
+#include <algorithm>
 
 using namespace std;
 //get the leftmost vertex in the list of the vertices
 //this functions checks the x coordinates of list of vertex and return the vertex with the minimum x coordinate
 
 //Working Fine Tested....
-Vertex get_leftmost_vertex(vector<Vertex> *v){
+Vertex get_leftmost_vertex(vector<Vertex> v){
   int min =numeric_limits<int>::max();
   Vertex minimum;
-  for (int i=0; i<v->size();i++){
-    int temp = v->at(i).get_x();
+  for (int i=0; i<v.size();i++){
+    int temp = v.at(i).get_x();
     if(temp < min){
       min = temp;
-      minimum = v->at(i);
+      minimum = v.at(i);
     }
   }
   return minimum;
@@ -27,13 +28,13 @@ Vertex get_leftmost_vertex(vector<Vertex> *v){
 //this functions checks the x coordinates of list of vertex and return the vertex with the maximum x coordinate
 
 //Working Fine Tested
-Vertex get_rightmost_vertex(vector<Vertex> *v){
+Vertex get_rightmost_vertex(vector<Vertex> v){
   int max = numeric_limits<int>::min();
   Vertex maximum;
-  for (int i=0; i<v->size();i++){
-    if (max < v->at(i).get_x()){
-      max = v->at(i).get_x();
-      maximum = v->at(i);
+  for (int i=0; i<v.size();i++){
+    if (max < v.at(i).get_x()){
+      max = v.at(i).get_x();
+      maximum = v.at(i);
     }
   }
   return maximum;
@@ -82,15 +83,36 @@ vector<Vertex> get_list_below(Edge e, vector<Vertex> v){
   return below;
 }
 
-//incomplete
 Polygon generate_polygon(vector<Vertex> v){
-  Vertex left = get_leftmost_vertex(&v);
-  Vertex right = get_rightmost_vertex(&v);
+
+  Vertex left = get_leftmost_vertex(v);
+  Vertex right = get_rightmost_vertex(v);
   Edge e(left, right);
 
-  vector<Vector> above = get_list_above(e, v);
+  vector<Vertex> above = get_list_above(e, v);
   vector<Vertex> below = get_list_below(e, v);
 
+
+  sort(above.begin(), above.end());
+  sort(below.begin(), below.end());
+  reverse(below.begin(), below.end());
+
+  vector<Vertex> arranged;
+  arranged.push_back(left);
+  for (int i=0; i<above.size();i++)
+    arranged.push_back(above[i]);
+  arranged.push_back(right);
+  for(int i=0;i<below.size();i++)
+    arranged.push_back(below[i]);
+  arranged.push_back(left);
+
+  vector<Edge> edges;
+  for(int i=0; i<arranged.size()-1;i++){
+    Edge e(arranged[i], arranged[i+1]);
+    edges.push_back(e);
+  }
+  Polygon p(edges);
+  return p;
 }
 
 int main(){
@@ -108,17 +130,7 @@ int main(){
   v.push_back(v3);
   v.push_back(v1);
   v.push_back(v6);
-  /*for(int i=0;i<v.size();i++){
-    cout<<v.at(i)<<endl;
-  }*/
 
-  Edge e(v4,v6);
-  cout<<"List above"<<endl;
-  vector<Vertex> above = get_list_above(e, v);
-  for(int i=0;i<above.size();i++)
-    cout<<above.at(i)<<endl;
-    cout<<"List below"<<endl;
-  vector<Vertex> below = get_list_below(e, v);
-  for(int i=0;i<below.size();i++)
-    cout<<below.at(i)<<endl;
+  Polygon p = generate_polygon(v);
+  cout<<p;
 }
