@@ -12,12 +12,9 @@ using namespace std;
 
 //Working Fine Tested....
 Vertex get_leftmost_vertex(vector<Vertex> v){
-  int min =numeric_limits<int>::max();
-  Vertex minimum;
+  Vertex minimum = v[0];
   for (int i=0; i<v.size();i++){
-    int temp = v.at(i).get_x();
-    if(temp < min){
-      min = temp;
+    if(v[i].get_x() < minimum.get_x()){
       minimum = v.at(i);
     }
   }
@@ -29,11 +26,9 @@ Vertex get_leftmost_vertex(vector<Vertex> v){
 
 //Working Fine Tested
 Vertex get_rightmost_vertex(vector<Vertex> v){
-  int max = numeric_limits<int>::min();
-  Vertex maximum;
+  Vertex maximum = v[0];
   for (int i=0; i<v.size();i++){
-    if (max < v.at(i).get_x()){
-      max = v.at(i).get_x();
+    if (maximum.get_x() < v[i].get_x()){
       maximum = v.at(i);
     }
   }
