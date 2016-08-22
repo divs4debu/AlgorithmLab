@@ -3,7 +3,6 @@
 #include "Edge.cpp"
 #include "Vertex.cpp"
 #include <vector>
-#include <limits>
 #include <algorithm>
 
 using namespace std;
@@ -62,9 +61,6 @@ vector<Vertex> get_list_above(Edge e, vector<Vertex> v){
       if (e.get_start_vertex() != v.at(i) && e.get_end_vertex() != v.at(i) && is_above(e, v.at(i))){
         above.push_back(v.at(i));
       }
-
-      else
-        continue;
     }
     return above;
 }
@@ -118,6 +114,8 @@ int main(){
   Vertex v5(0,10);
   Vertex v6(-4,3);
 
+  Vertex test(5,0);
+
   vector<Vertex> v;
   v.push_back(v4);
   v.push_back(v2);
@@ -128,4 +126,7 @@ int main(){
 
   Polygon p = generate_polygon(v);
   cout<<p;
+
+  cout<<test<<endl;
+  cout<<p.is_inside(test);
 }
