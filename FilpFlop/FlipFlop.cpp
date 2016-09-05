@@ -27,8 +27,16 @@ public:
     return Q;
   };
   void processNextState(bool Clk){
-    if (clk)
+    if (clk & !Clk)
       Q = (!(K)&Q)|(!(Q)&J);
+    clk = Clk;
+  }
+
+  void clear(){
+      J = true;
+      K = true;
+      clk = false;
+      Q = false;
   }
 
 };
