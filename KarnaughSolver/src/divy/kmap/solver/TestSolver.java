@@ -7,12 +7,21 @@ import java.util.ArrayList;
  */
 public class TestSolver {
     private ArrayList<ArrayList<Boolean> > kmap;
-    private ArrayList<ArrayList<Integer> > terms;
+    private ArrayList<ArrayList<Integer> > terms = new ArrayList<>();
     private int variable_count;
-    int resultTerms;
+    private int resultTerms;
+    private ArrayList<Character> minimized;
 
     public TestSolver(ArrayList<ArrayList<Boolean> > map){
         this.kmap = map;
+    }
+    public TestSolver(){}
+
+    public void setVariable_count(int count){
+        variable_count = count;
+    }
+    public void setTerms(ArrayList<ArrayList<Integer>> list){
+        this.terms = list;
     }
 
     /**
@@ -21,13 +30,116 @@ public class TestSolver {
      * then: coordinate set will be - [ [0,0,1], [0,1,1], [1,0,1], [1,1,1]]
      * @param position  : arraylist of integers where either dontcare or 1's are present
      */
-    public void setTerms(ArrayList<Integer> position){
+    private void setCoordinate(ArrayList<Integer> position){
+        //this.terms.add(new ArrayList<Integer>());
+        //System.out.print(terms.size());
         for (int i = 0; i< position.size(); i++){
             this.terms.add(new ArrayList<Integer>());
             for (int j = 0; j< this.variable_count; j++){
-                this.terms.get(terms.size()).add(0, position.get(i) % 2);
+                this.terms.get(terms.size()-1).add(0, position.get(i) % 2);
                 position.set(i, position.get(i)/2);
             }
         }
     }
+
+    public void minimize(ArrayList<Integer> one, ArrayList<Integer> dcare){
+        setCoordinate(one);
+        compare();
+        unRepeat();
+        printArray(terms);
+
+    }
+
+    private void compare(){
+        ArrayList<Integer> tempSave = new ArrayList();
+        ArrayList<ArrayList<Integer>> saver = new ArrayList();
+        ArrayList<Boolean> compared = new ArrayList();
+        int k,j;
+
+        for(int i = 0; i<variable_count && terms.size() >1; i++){
+            compared.clear();
+
+            for(j = 0; j< terms.size()-1; j++){
+                for(k = j+1; k<terms.size(); k++){
+                    tempSave.clear();
+                    for(int l =0; l< variable_count; l++){
+                        if(terms.get(j).get(l) == terms.get(k).get(l))
+                            tempSave.add(l);
+                    }
+                    if(tempSave.size() == variable_count-1)
+                        saveValue(tempSave, saver, compared,j,k-1);
+
+
+                }
+            }
+            addOther(saver, compared);
+            if(saver.size()>0) {
+                terms.clear();
+                terms = new ArrayList<>(saver);
+            }
+            saver.clear();
+        }
+
+    }
+
+
+    private void saveValue(ArrayList<Integer> tempSave, ArrayList<ArrayList <Integer>> saver, ArrayList<Boolean> compared, int index, int index2){
+
+        if(tempSave.size() == variable_count-1){
+            saver.add(new ArrayList<Integer>());
+            for(int i = 0; i< terms.get(index).size();i++){
+                if(i==tempSave.size())
+                    tempSave.add(-1);
+                else if(i != tempSave.get(i))
+                    tempSave.add(i, -1);
+            }
+
+            for(int i = 0; i < tempSave.size(); i++){
+                if(tempSave.get(i) == -1)
+                    saver.get(saver.size()-1).add(-1);
+                else
+                    saver.get(saver.size()-1).add(terms.get(index).get(i));
+            }
+            compared.add(index,new Boolean(true));
+            compared.add(new Boolean(true));
+
+        }
+    }
+
+    private void addOther(ArrayList<ArrayList<Integer> >saver, ArrayList<Boolean> compared){
+        for(int i=0 ; i<terms.size();i++){
+            if(compared.size()>0 && !compared.get(i)){
+                saver.add(new ArrayList<Integer>());
+                for(int j =0; j<terms.get(i).size(); j++)
+                    saver.get(saver.size()).add(terms.get(i).get(j));
+            }
+        }
+    }
+
+    private void unRepeat(){
+        for(int i = 0; i< terms.size(); i++){
+            for (int j = i+1; j<terms.size(); j++){
+                if(terms.get(i).equals(terms.get(j))) {
+                    terms.remove(j);
+                    j--;
+
+                }
+            }
+        }
+
+
+    }
+
+    private void printArray(ArrayList<ArrayList<Integer>> x){
+        for(ArrayList<Integer> y : x){
+            for(Integer z: y){
+                System.out.print(z + " ");
+            }
+            System.out.print("|");
+        }
+        System.out.println();
+    }
+
+
+
 }
