@@ -1,18 +1,21 @@
 package divy.kmap.solver;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Created by divy on 10/9/16.
  */
 public class TestSolver {
-    private ArrayList<ArrayList<Boolean> > kmap;
+    private ArrayList<Boolean> kmap;
     private ArrayList<ArrayList<Integer> > terms = new ArrayList<>();
     private int variable_count;
     private int resultTerms;
     private ArrayList<Character> minimized;
 
-    public TestSolver(ArrayList<ArrayList<Boolean> > map){
+    public TestSolver(ArrayList<Boolean>  map){
         this.kmap = map;
     }
     public TestSolver(){}
@@ -44,6 +47,7 @@ public class TestSolver {
 
     public void minimize(ArrayList<Integer> one, ArrayList<Integer> dcare){
         setCoordinate(one);
+        //setCoordinate(dcare);
         compare();
         unRepeat();
         printArray(terms);
@@ -51,25 +55,24 @@ public class TestSolver {
     }
 
     private void compare(){
-        ArrayList<Integer> tempSave = new ArrayList();
-        ArrayList<ArrayList<Integer>> saver = new ArrayList();
-        ArrayList<Boolean> compared = new ArrayList();
+        ArrayList<Integer> tempSave = new ArrayList<>();
+        ArrayList<ArrayList<Integer>> saver = new ArrayList<>();
+        //List<Boolean> compared = new ArrayList<>(Collections.nCopies(42, false));
         int k,j;
 
         for(int i = 0; i<variable_count && terms.size() >1; i++){
-            compared.clear();
+            List<Boolean> compared = new ArrayList<>(Collections.nCopies(42, false));
 
             for(j = 0; j< terms.size()-1; j++){
                 for(k = j+1; k<terms.size(); k++){
                     tempSave.clear();
                     for(int l =0; l< variable_count; l++){
-                        if(terms.get(j).get(l) == terms.get(k).get(l))
+                        if(terms.get(j).get(l).equals(terms.get(k).get(l)))
                             tempSave.add(l);
                     }
                     if(tempSave.size() == variable_count-1)
-                        saveValue(tempSave, saver, compared,j,k-1);
-
-
+                        saveValue(tempSave, saver, compared,j, k);
+                    printArray(saver);
                 }
             }
             addOther(saver, compared);
@@ -83,7 +86,7 @@ public class TestSolver {
     }
 
 
-    private void saveValue(ArrayList<Integer> tempSave, ArrayList<ArrayList <Integer>> saver, ArrayList<Boolean> compared, int index, int index2){
+    private void saveValue(ArrayList<Integer> tempSave, ArrayList<ArrayList <Integer>> saver, List<Boolean> compared, int index, int index2){
 
         if(tempSave.size() == variable_count-1){
             saver.add(new ArrayList<Integer>());
@@ -100,18 +103,18 @@ public class TestSolver {
                 else
                     saver.get(saver.size()-1).add(terms.get(index).get(i));
             }
-            compared.add(index,new Boolean(true));
-            compared.add(new Boolean(true));
+            compared.set(index,new Boolean(true));
+            compared.set(index2, new Boolean(true));
 
         }
     }
 
-    private void addOther(ArrayList<ArrayList<Integer> >saver, ArrayList<Boolean> compared){
+    private void addOther(ArrayList<ArrayList<Integer> >saver, List<Boolean> compared){
         for(int i=0 ; i<terms.size();i++){
             if(compared.size()>0 && !compared.get(i)){
                 saver.add(new ArrayList<Integer>());
                 for(int j =0; j<terms.get(i).size(); j++)
-                    saver.get(saver.size()).add(terms.get(i).get(j));
+                    saver.get(saver.size()-1).add(terms.get(i).get(j));
             }
         }
     }
@@ -140,6 +143,22 @@ public class TestSolver {
         System.out.println();
     }
 
+    public void setKmap(ArrayList<Boolean> map){
+        this.kmap = map;
+    }
 
+    public void resolve(){
+        ArrayList<Integer> ones = new ArrayList<>();
+        ArrayList<Integer> dcares = new ArrayList<>();
+        for (int i = 0; i< kmap.size();i++){
+
+            if(kmap.get(i) == (null))
+                dcares.add(i);
+            else if(kmap.get(i).equals(Boolean.TRUE))
+                ones.add(i);
+        }
+
+        minimize(ones, dcares);
+    }
 
 }
